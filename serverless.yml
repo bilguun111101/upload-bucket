@@ -1,0 +1,59 @@
+service: authentication
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - 'dynamodb:*'
+          Resource: '*'
+
+# resources:
+#   Resources:
+#     BilguunBucket:
+#       Type: AWS::S3::Bucket
+#       Properties:
+#         # Set the CORS policy
+#         BucketName: leaf3bilguunawstutorial
+#         AccessControl: Private
+#         CorsConfiguration:
+#           CorsRules:
+#             -
+#               AllowedOrigins:
+#                 - '*'
+#               AllowedHeaders:
+#                 - '*'
+#               AllowedMethods:
+#                 - GET
+#                 - PUT
+#                 - POST
+#                 - DELETE
+#                 - HEAD
+
+resources:
+  Resources:
+    mbdevs:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: leaf3bilguunawstutorial
+    SampleBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref mbdevs
+        PolicyDocument:
+          Statement:
+            - Action:
+                - "s3:GetObject"
+                - "s3:PutObject"
+              Effect: Allow
+              Resource:
+                - arn:aws:s3:::leaf3bilguunawstutorial/*
+              Principal: '*'
+
+functions:
+  function: 
+    handler: index.handler
